@@ -1,46 +1,26 @@
-import requests
-from prometheus_client import start_http_server, Gauge
-import time
+from prometheus_client import make_asgi_app
+from hypercorn.asyncio import serve
+import asyncio
+import logging
+from hypercorn.config import Config
+from src.utils.scrape import ScrapeMetrics
 
-class LogstashEventsExporter:
-    def __init__(self, logstash_url, metrics_port=9124, collect_interval=15):
-        self.logstash_url = logstash_url
-        self.metrics_port = metrics_port
-        self.collect_interval = collect_interval
-        
-        # Events metrics
-        self.events_input = Gauge('logstash_events_input_total', 'Total input events')
-        self.events_filtered = Gauge('logstash_events_filtered_total', 'Total filtered events')
-        self.events_output = Gauge('logstash_events_output_total', 'Total output events')
-        self.events_duration_ms = Gauge('logstash_events_duration_ms', 'Event processing duration')
-        
-    def fetch_events_stats(self):
-        try:
-            response = requests.get(f'{self.logstash_url}/_node/stats')
-            if response.status_code == 200:
-                stats = response.json()
-                events = stats.get('events', {})
-                
-                self.events_input.set(events.get('in', 0))
-                self.events_filtered.set(events.get('filtered', 0))
-                self.events_output.set(events.get('out', 0))
-                self.events_duration_ms.set(events.get('duration_in_millis', 0))
-        except Exception as e:
-            print(f"Error fetching events stats: {e}")
-    
-    def collect_metrics(self):
-        while True:
-            self.fetch_events_stats()
-            time.sleep(self.collect_interval)
-    
-    def start(self):
-        start_http_server(self.metrics_port)
-        self.collect_metrics()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-def main():
-    LOGSTASH_URL = 'http://logstash:9600'
-    exporter = LogstashEventsExporter(LOGSTASH_URL)
-    exporter.start()
+async def collect():
+    await ScrapeMetrics.collect_metrics('logstash','9600')
+    
+async def metrics_app(scope,receive, send):
+    if scope['type'] == 'http' and scope['path'] == f'/metrics':
+        await collect()
+    app = make_asgi_app()
+    await app(scope, receive, send)
+
+async def main():
+    hypercon_config = Config()
+    hypercon_config.bind = [f"0.0.0.0:9124"]
+    await serve(metrics_app, hypercon_config)
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
