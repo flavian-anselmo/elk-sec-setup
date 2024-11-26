@@ -1,4 +1,4 @@
-version: '2.3'
+version: '2.2'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.0
@@ -16,7 +16,7 @@ services:
     ulimits:
       memlock:
         soft: -1
-        hard: -1  
+        hard: -1
     mem_limit: 4g
 
   kibana:
@@ -27,14 +27,45 @@ services:
     volumes:
       - kibana-data:/usr/share/kibana/data
     ports:
-     - 5601:5601
+      - 5601:5601
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     mem_limit: 1g
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.4.0
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./logstash.yml:/usr/share/logstash/config/logstash.yml
+      # - ./logstash.conf:/usr/share/logstash/pipeline
+    ports:
+      - 5044:5044  # For Beats input (if you're using Filebeat, Metricbeat, etc.)
+      - 9600:9600 # For Logstash TCP/UDP input (can be used for other log shippers)
+    environment:
+      - LOGSTASH_HTTP_API=true  # Optional: Disable Logstash's internal HTTP API
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    restart: always
+    mem_limit: 3g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  logstash-exporter:
+    build: ./logstash-exporter
+    container_name: persia
+    depends_on: 
+      - logstash
+    ports:
+      - 9124:9124
+    restart: unless-stopped
+    
+
 volumes:
-    elasticsearch-data:
-      driver: local
-    kibana-data:
-      driver: local
+  elasticsearch-data:
+    driver: local
+  kibana-data:
+    driver: local
