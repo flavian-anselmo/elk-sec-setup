@@ -42,7 +42,7 @@ services:
       - ./logstash.yml:/usr/share/logstash/config/logstash.yml
       # - ./logstash.conf:/usr/share/logstash/pipeline
     ports:
-      - 5044:5044  # For Beats input (if you're using Filebeat, Metricbeat, etc.)
+      - 5044:5044  
       - 9600:9600 # For Logstash TCP/UDP input (can be used for other log shippers)
     environment:
       - LOGSTASH_HTTP_API=true  # Optional: Disable Logstash's internal HTTP API
