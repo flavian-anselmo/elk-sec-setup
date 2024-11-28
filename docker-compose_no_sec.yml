@@ -45,7 +45,6 @@ services:
       - 5044:5044  
       - 9600:9600 # For Logstash TCP/UDP input (can be used for other log shippers)
     environment:
-      - LOGSTASH_HTTP_API=true  # Optional: Disable Logstash's internal HTTP API
       - ELASTICSEARCH_HOST=http://elasticsearch:9200
     restart: always
     mem_limit: 3g
