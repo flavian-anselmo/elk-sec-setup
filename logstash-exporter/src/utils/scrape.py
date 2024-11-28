@@ -9,7 +9,7 @@ class ScrapeMetrics:
         try:
             NodeStats.node_stats(logstash_url=logstash_url, LOGSTASH_PORT=LOGSTASH_PORT)
         except Exception as err:
-            logger.error(f'Error: {err}')
+            logger.error(f'ScrapeMetricsError: {err}')
 
 
               

@@ -41,3 +41,26 @@ jvm_uptime_millis = Gauge('logstash_jvm_uptime_millis', 'JVM Uptime in Milliseco
 
 # Node status
 node_status = Gauge('logstash_node_status', '1 for Healthy (GREEN), 0 for Unhealthy(RED), 2 for unknown, 3 for Functionality degraded (YELLOW)')
+ 
+#  Pipelines (overall stats)
+pipeline_workers = Gauge('logstash_pipeline_workers', 'Number of pipeline workers')
+pipeline_batch_size = Gauge('logstash_pipeline_batch_size', 'Pipeline batch size')
+pipeline_batch_delay = Gauge('logstash_pipeline_batch_delay', 'Pipeline batch delay in milliseconds')
+
+# pipeline reloads (overall)
+reload_successes = Gauge('logstash_reload_successes', 'Number of successful pipeline reloads')
+reload_failures = Gauge('logstash_reload_failures', 'Number of failed pipeline reloads')
+
+# event_count
+queue_events_count = Gauge('logstash_queue_events_count', 'Number of events currently in the queue')
+
+#  process
+process_open_file_descriptors = Gauge('logstash_process_open_file_descriptors', 'Number of open file descriptors')
+process_peak_open_file_descriptors = Gauge('logstash_process_peak_open_file_descriptors', 'Peak number of open file descriptors')
+process_max_file_descriptors = Gauge('logstash_process_max_file_descriptors', 'Maximum number of file descriptors')
+process_mem_total_virtual_bytes = Gauge('logstash_process_mem_total_virtual_bytes', 'Total virtual memory in bytes')
+process_cpu_total_millis = Gauge('logstash_process_cpu_total_millis', 'Total CPU time in milliseconds')
+process_cpu_percent = Gauge('logstash_process_cpu_percent', 'CPU usage percent')
+process_cpu_load_average_1m = Gauge('logstash_process_cpu_load_average_1m', '1-minute CPU load average')
+process_cpu_load_average_5m = Gauge('logstash_process_cpu_load_average_5m', '5-minute CPU load average')
+process_cpu_load_average_15m = Gauge('logstash_process_cpu_load_average_15m', '15-minute CPU load average')
