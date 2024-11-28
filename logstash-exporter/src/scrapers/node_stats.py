@@ -97,11 +97,6 @@ class NodeStats:
                 gauge.process_cpu_load_average_5m.set(process_cpu_load_avg.get('5m',0))
                 gauge.process_cpu_load_average_15m.set(process_cpu_load_avg.get('15m',0))
 
-            
-
-
-
-
                 # Node stats
                 node_status = stats.get('status',{})
                 if node_status == 'green':
