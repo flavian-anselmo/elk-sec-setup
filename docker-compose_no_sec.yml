@@ -40,7 +40,7 @@ services:
       - elasticsearch
     volumes:
       - ./logstash.yml:/usr/share/logstash/config/logstash.yml
-      # - ./logstash.conf:/usr/share/logstash/pipeline
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
       - 5044:5044  
       - 9600:9600 # For Logstash TCP/UDP input (can be used for other log shippers)

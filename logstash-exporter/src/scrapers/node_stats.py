@@ -107,6 +107,17 @@ class NodeStats:
                   gauge.node_status.set(2)
                 if node_status == 'yellow':
                   gauge.node_status.set(3)
+
+                # pipelines
+                pipelines = stats.get('pipelines',{})
+                for pipeline_name, pipeline_data in pipelines.items():
+                    events = pipeline_data.get('events', {})
+                    # Update metrics for each pipeline
+                    gauge.pipeline_events_out.labels(pipeline=pipeline_name).set(events.get('out', 0))
+                    gauge.pipeline_events_in.labels(pipeline=pipeline_name).set(events.get('in', 0))
+                    gauge.pipeline_events_filtered.labels(pipeline=pipeline_name).set(events.get('filtered', 0))
+                    gauge.pipeline_queue_push_duration.labels(pipeline=pipeline_name).set(events.get('queue_push_duration_in_millis', 0))
+                    gauge.pipeline_duration_millis.labels(pipeline=pipeline_name).set(events.get('duration_in_millis', 0))
         except Exception as err:
             logger.error(f"NodeStatsCollectionError: {err}")
 

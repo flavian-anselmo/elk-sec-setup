@@ -64,3 +64,10 @@ process_cpu_percent = Gauge('logstash_process_cpu_percent', 'CPU usage percent')
 process_cpu_load_average_1m = Gauge('logstash_process_cpu_load_average_1m', '1-minute CPU load average')
 process_cpu_load_average_5m = Gauge('logstash_process_cpu_load_average_5m', '5-minute CPU load average')
 process_cpu_load_average_15m = Gauge('logstash_process_cpu_load_average_15m', '15-minute CPU load average')
+
+# each pipeline
+pipeline_events_out = Gauge('logstash_pipeline_events_out', 'Number of events outputted by the pipeline', ['pipeline'])
+pipeline_events_in = Gauge('logstash_pipeline_events_in', 'Number of events inputted to the pipeline', ['pipeline'])
+pipeline_events_filtered = Gauge('logstash_pipeline_events_filtered', 'Number of events filtered by the pipeline', ['pipeline'])
+pipeline_queue_push_duration = Gauge('logstash_pipeline_queue_push_duration_millis', 'Queue push duration in milliseconds', ['pipeline'])
+pipeline_duration_millis = Gauge('logstash_pipeline_duration_millis', 'Pipeline processing duration in milliseconds', ['pipeline'])
