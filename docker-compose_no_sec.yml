@@ -6,7 +6,7 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
-      - 9201:9201
+      - 9200:9200
     restart: always
     environment:
       - xpack.security.enabled=false
@@ -17,21 +17,21 @@ services:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 3g
+    mem_limit: 4g
 
-  # kibana:
-  #   depends_on:
-  #     - elasticsearch
-  #   image: docker.elastic.co/kibana/kibana:8.4.0
-  #   container_name: kibana
-  #   volumes:
-  #     - kibana-data:/usr/share/kibana/data
-  #   ports:
-  #     - 5601:5601
-  #   restart: always
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-  #   mem_limit: 1g
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: docker.elastic.co/kibana/kibana:8.4.0
+    container_name: kibana
+    volumes:
+      - kibana-data:/usr/share/kibana/data
+    ports:
+      - 5601:5601
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    mem_limit: 1g
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.4.0
@@ -59,12 +59,12 @@ services:
     depends_on: 
       - logstash
     ports:
-      - 9123:9123
+      - 9124:9124
     restart: unless-stopped
     
 
 volumes:
   elasticsearch-data:
     driver: local
-  # kibana-data:
-  #   driver: local
+  kibana-data:
+    driver: local
