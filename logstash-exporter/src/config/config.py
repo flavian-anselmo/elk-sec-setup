@@ -5,7 +5,7 @@ class Config:
         config = configparser.ConfigParser()
         config.read(file_path)
         exporter_port = config.getint('exporter','EXPORTER_PORT',fallback='9123')
-        logstash_port = config.get('logstash','LOGSTASH_PORT',fallback='9600')
+        logstash_port = config.get('logstash','LOGSTASH_PORT',fallback='9665')
         logstash_host = config.get('logstash','LOGSTASH_HOST',fallback='localhost')
 
 
